@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorgearbeit & Mentale Belastung Quiz</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        violetBrand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom styling for range sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 9999px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        input[type=range]:disabled::-webkit-slider-runnable-track {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+        input[type=range]:disabled::-webkit-slider-thumb {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 flex flex-col min-h-full antialiased selection:bg-violet-100 selection:text-violet-700">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showWelcomeScreen()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-hands-holding-heart text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Sorgearbeit Quiz</h1>
+                    <p class="text-xs text-slate-500 font-medium">Wer übernimmt wie viel im Alltag?</p>
+                </div>
+            </div>
+            <div id="header-progress" class="hidden items-center space-x-2 text-xs sm:text-sm font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
+                <span id="current-step-badge">Seite 1 von 5</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- SCREEN 1: WELCOME SCREEN -->
+        <section id="screen-welcome" class="fade-in space-y-6">
+            <div class="bg-white rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 text-center relative overflow-hidden">
+                <div class="absolute -top-12 -right-12 w-40 h-40 bg-violet-100 rounded-full blur-2xl opacity-60"></div>
+                <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-indigo-100 rounded-full blur-2xl opacity-60"></div>
+
+                <div class="relative z-10 max-w-xl mx-auto space-y-6">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-100 text-violet-700">
+                        <i class="fa-solid fa-sliders"></i> Sorgearbeit-Prozentcheck
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        Wie gerecht ist eure Sorgearbeit verteilt?
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Nutze die Prozent-Schieberegler, um für jede Alltagsaufgabe einzuschätzen, wie viel Prozent der Arbeit du übernimmst und wie viel von deiner Partnerin / deinem Partner oder Dritten getragen wird.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left">
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-layer-group text-violet-600 text-lg mb-1"></i>
+                            <h3 class="font-semibold text-slate-900 text-sm">5 Themen-Seiten</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Übersichtliche Aufteilung nach Bereichen</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-sliders text-violet-600 text-lg mb-1"></i>
+                            <h3 class="font-semibold text-slate-900 text-sm">Prozent-Skala</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Stufenlose Schieberegler (0 - 100%)</p>
+                        </div>
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-chart-pie text-violet-600 text-lg mb-1"></i>
+                            <h3 class="font-semibold text-slate-900 text-sm">Auswertung</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Prozentuale Gesamtbilanz & Fakten</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3">
+                        <button onclick="startQuiz()" class="w-full sm:w-auto px-8 py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl shadow-lg shadow-violet-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 inline-flex items-center justify-center space-x-2 text-base">
+                            <span>Quiz jetzt starten</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fact Banner -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-md">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <h3 class="text-base font-bold text-violet-300 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i> Wusstest du schon?
+                        </h3>
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                            Sorgearbeit ist ein Synonym für diese <strong class="text-white font-bold">Care-Arbeit</strong> von der alle reden. Dabei handelt es sich um unbezahlte Arbeit, bei der sich Menschen um andere kümmern.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: QUIZ PAGE SCREEN -->
+        <section id="screen-quiz" class="hidden fade-in space-y-6">
+            <!-- Progress Bar Card -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 space-y-2">
+                <div class="flex justify-between items-center text-xs font-semibold text-slate-500">
+                    <span id="page-category-title" class="uppercase tracking-wider text-violet-600 font-bold">Kategorie</span>
+                    <span id="progress-text">Seite 1 von 5</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-violet-600 h-full w-0 transition-all duration-300 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Page Container for Questions -->
+            <div id="questions-container" class="space-y-4">
+                <!-- Dynamically rendered sliders -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 flex items-center justify-between">
+                <button id="btn-prev" onclick="previousPage()" class="px-5 py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition flex items-center gap-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                    <span>Zurück</span>
+                </button>
+
+                <button id="btn-next" onclick="nextPage()" class="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl transition flex items-center gap-2 text-sm shadow-sm">
+                    <span>Nächste Seite</span>
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: CHILDREN FILTER STEP (Interim Page between 4 and 5) -->
+        <section id="screen-children-filter" class="hidden fade-in space-y-6">
+            <div class="bg-white rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 text-center space-y-6">
+                <div class="w-16 h-16 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
+                    <i class="fa-solid fa-child-reaching"></i>
+                </div>
+
+                <div class="space-y-2 max-w-md mx-auto">
+                    <span class="text-xs font-bold text-violet-600 uppercase tracking-widest">Zwischenfrage</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Hast du Kinder?</h2>
+                    <p class="text-slate-500 text-sm">
+                        Deine Antwort bestimmt, ob im Anschluss Fragen zur Kinderbetreuung & Erziehung angezeigt werden.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
+                    <button onclick="answerChildrenQuestion(true)" class="p-5 border-2 border-slate-200 hover:border-violet-600 hover:bg-violet-50/50 rounded-2xl text-left transition group flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 group-hover:bg-violet-600 group-hover:text-white flex items-center justify-center transition shrink-0">
+                            <i class="fa-solid fa-check text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-base">Ja</div>
+                            <div class="text-xs text-slate-500">Ich habe Kind(er)</div>
+                        </div>
+                    </button>
+
+                    <button onclick="answerChildrenQuestion(false)" class="p-5 border-2 border-slate-200 hover:border-slate-400 hover:bg-slate-50 rounded-2xl text-left transition group flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 group-hover:bg-slate-700 group-hover:text-white flex items-center justify-center transition shrink-0">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-base">Nein</div>
+                            <div class="text-xs text-slate-500">Keine Kinder im Haushalt</div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100">
+                    <button onclick="previousPageFromChildrenFilter()" class="px-4 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 transition inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-left"></i> Zurück zu Seite 4
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: RESULTS SCREEN -->
+        <section id="screen-results" class="hidden fade-in space-y-6">
+            <!-- Results Overview Header -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 text-center space-y-4">
+                <div class="w-16 h-16 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Deine Auswertung</h2>
+                    <p class="text-slate-500 text-sm mt-1">Überblick über deine durchschnittliche Übernahme der Sorgearbeit</p>
+                </div>
+
+                <!-- Main Highlight Stat Box -->
+                <div class="bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 border border-violet-100 p-6 rounded-2xl max-w-xl mx-auto text-left space-y-3">
+                    <h3 id="result-line-1" class="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
+                        Du übernimmst ungefähr <span id="result-overall-percent" class="text-violet-600">0%</span> der Sorgearbeit in deinem Haushalt.
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Durchschnittlich übernehmen Frauen in Deutschland pro Woche 29h 52min der unbezahlten Sorgearbeit. Männer hingegeben übernehmen wöchentlich im Durchschnitt 20h 42min. Diese Lücke entspricht einer strukturellen Ungleichheit, die aufzeigt, dass Frauen aufgrund Ihres Geschlechts auch heute noch benachteiligt sind.
+                    </p>
+                    <p class="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed">
+                        In eurem Zuhause gibt es auch diese Ungleichheit? Dann sei teil der Lösung und ändere etwas daran!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Category Breakdown Grid & Disclaimer -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Breakdown by Topic Page -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-violet-600"></i> Übersicht nach Kategorien
+                    </h3>
+                    <div id="category-bars-container" class="space-y-3.5 pt-1">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- MANDATORY DISCLAIMER BOX -->
+                <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-6 space-y-3 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 text-amber-900 font-bold text-base mb-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg"></i>
+                            <span>Wichtiger Hinweis zur Bewertung</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-amber-900/90 leading-relaxed font-semibold">
+                            Nicht alle Aufgaben entsprechen untereinander dem gleichen zeitlichen und mentalen Aufwand!
+                        </p>
+                        <p class="text-xs sm:text-sm text-amber-800/80 leading-relaxed mt-2">
+                            Einige Aufgaben fallen täglich mehrfach an (wie Kochen oder Kinder fertigmachen) und erfordern ständige vorausschauende Planung (<em>Mentale Belastung</em>), während andere Tätigkeiten eher sporadisch anfallen.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-amber-200/60 text-xs text-amber-700 italic">
+                        💡 Ein reiner Prozent-Durchschnitt gibt Orientierung, ersetzt aber nicht den Blick auf die tatsächliche Belastung.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Answers Accordion / List -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleDetailedAnswers()">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Detailübersicht aller Antworten</h3>
+                        <p class="text-xs text-slate-500">Klicke, um deine genauen Prozent-Einstellungen pro Aufgabe einzusehen</p>
+                    </div>
+                    <button id="btn-toggle-details" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                        <i class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+                    </button>
+                </div>
+
+                <div id="detailed-answers-container" class="hidden pt-4 border-t border-slate-100 space-y-2.5">
+                    <!-- Dynamic details list -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                <button onclick="startQuiz()" class="w-full sm:w-auto px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Quiz neu starten</span>
+                </button>
+                <button onclick="copyResultsSummary()" class="w-full sm:w-auto px-6 py-3 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="copy-btn-text">Ergebnis kopieren</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-3xl mx-auto px-4">
+            <p>Sorgearbeit & Mentale Belastung Selbsteinschätzung • Basierend auf Daten zum Gender Care Gap in Deutschland.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Page structure based strictly on Quizfragen_Jusos_Infostand_4.docx
+        const QUIZ_PAGES = [
+            {
+                pageIndex: 1,
+                title: "Seite 1: Haushalt & Alltag",
+                category: "Haushalt & Alltag",
+                questions: [
+                    { id: "p1_q1", text: "Wer macht bei euch die Wäsche?" },
+                    { id: "p1_q2", text: "Wer putzt das Haus/die Wohnung (Fenster, Küche, Bad, Staubsaugen, Wischen etc.)?" },
+                    { id: "p1_q3", text: "Wer macht den Haushalts-/Familieneinkauf (inkl. Einkaufsliste schreiben)?" },
+                    { id: "p1_q4", text: "Wer kocht/bereitet das Essen zu?" }
+                ]
+            },
+            {
+                pageIndex: 2,
+                title: "Seite 2: Organisation & Soziales",
+                category: "Organisation & Soziales",
+                questions: [
+                    { id: "p2_q1", text: "Wer koordiniert bei euch den Terminkalender (Arzttermine, Geburtstagserinnerungen etc.)?" },
+                    { id: "p2_q2", text: "Wer organisiert bei euch Geschenke?" },
+                    { id: "p2_q3", text: "Wer leistet emotionale Unterstützung bei Familie und Freunden?" }
+                ]
+            },
+            {
+                pageIndex: 3,
+                title: "Seite 3: Feiern, Haus & Garten",
+                category: "Feiern, Haus & Garten",
+                questions: [
+                    { id: "p3_q1", text: "Wer veranstaltet Geburtstage, Weihnachten etc.?" },
+                    { id: "p3_q2", text: "Wer bringt den Müll raus?" },
+                    { id: "p3_q3", text: "Wer macht die Gartenarbeit?" },
+                    { id: "p3_q4", text: "Wer kümmert sich um \"Verwaltungsaufgaben\" im Haushalt (Versicherungen, Reparaturen etc.)?" }
+                ]
+            },
+            {
+                pageIndex: 4,
+                title: "Seite 4: Pflege & Angehörige",
+                category: "Pflege & Angehörige",
+                questions: [
+                    { id: "p4_q1", text: "Wer übernimmt die Pflege/Unterstützung von älteren und/oder erkrankten Familienmitgliedern (z.B. Eltern, Schwiegereltern etc.)?" },
+                    { id: "p4_q2", text: "Wer besucht und kümmert sich mehr um alleinlebende Angehörige (Großeltern, etc.)?" },
+                    { id: "p4_q3", text: "Wer pflegt Grabstätten von verstorbenen Familienangehörigen?" }
+                ]
+            },
+            {
+                pageIndex: 5,
+                title: "Seite 5: Kinder, Familie & Erziehung",
+                category: "Kinder & Familie",
+                requiresChildren: true,
+                questions: [
+                    { id: "p5_q1", text: "Wer kümmert sich um das Haustier (Futter kaufen, Tierarzt etc.)?" },
+                    { id: "p5_q2", text: "Wer macht mit den Kindern die Hausaufgaben?" },
+                    { id: "p5_q3", text: "Wer geht zu Elternabend & Co.?" },
+                    { id: "p5_q4", text: "Wer macht die Kinder in der Früh fertig (inkl. Pausenbrot)?" },
+                    { id: "p5_q5", text: "Wer übernimmt wie viel in der Kindererziehung ?" }
+                ]
+            }
+        ];
+
+        // State Management
+        let currentPageIndex = 0; // 0..3 for pages 1..4, page 5 index is 4
+        let hasChildren = null; // true, false or null
+        let sliderAnswers = {}; // Map of qId -> { val: number (0..100), na: boolean }
+
+        // Initialize default state for all questions
+        function initAnswers() {
+            sliderAnswers = {};
+            QUIZ_PAGES.forEach(page => {
+                page.questions.forEach(q => {
+                    sliderAnswers[q.id] = { val: 50, na: false };
+                });
+            });
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('screen-welcome').classList.remove('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-children-filter').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('header-progress').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startQuiz() {
+            initAnswers();
+            currentPageIndex = 0;
+            hasChildren = null;
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-children-filter').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('header-progress').classList.remove('hidden');
+
+            renderPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPage() {
+            const page = QUIZ_PAGES[currentPageIndex];
+            const totalDisplayPages = hasChildren === false ? 4 : 5;
+            const displayPageNum = currentPageIndex + 1;
+
+            // Header progress updates
+            document.getElementById('current-step-badge').innerText = `Seite ${displayPageNum} von ${totalDisplayPages}`;
+            document.getElementById('progress-text').innerText = `Seite ${displayPageNum} von ${totalDisplayPages}`;
+            document.getElementById('page-category-title').innerText = page.category;
+
+            const progressPct = (displayPageNum / totalDisplayPages) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${progressPct}%`;
+
+            // Questions Container rendering
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            page.questions.forEach((q, idx) => {
+                const answerState = sliderAnswers[q.id] || { val: 50, na: false };
+                const qCard = document.createElement('div');
+                qCard.className = `bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200 space-y-4 ${answerState.na ? 'bg-slate-50 opacity-75' : ''}`;
+
+                qCard.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="space-y-0.5">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Frage ${idx + 1}</span>
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">${q.text}</h3>
+                        </div>
+                        <label class="inline-flex items-center gap-2 cursor-pointer self-start sm:self-center shrink-0 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">
+                            <input type="checkbox" onchange="toggleNA('${q.id}', this.checked)" ${answerState.na ? 'checked' : ''} class="w-4 h-4 text-violet-600 rounded border-slate-300 focus:ring-violet-500">
+                            <span class="text-xs font-semibold text-slate-700">Trifft nicht zu / n/a</span>
+                        </label>
+                    </div>
+
+                    <div class="space-y-3 pt-1">
+                        <!-- Percentage Display Badge -->
+                        <div class="flex items-center justify-between text-xs sm:text-sm font-bold">
+                            <span class="${answerState.na ? 'text-slate-400' : 'text-violet-700'} flex items-center gap-1.5">
+                                <i class="fa-solid fa-user text-xs"></i> Ich: <span id="val-ich-${q.id}" class="text-sm font-extrabold">${answerState.na ? '0' : answerState.val}%</span>
+                            </span>
+                            <span class="${answerState.na ? 'text-slate-400' : 'text-slate-600'} flex items-center gap-1.5">
+                                Partner/in / Andere: <span id="val-other-${q.id}" class="text-sm font-extrabold">${answerState.na ? '0' : (100 - answerState.val)}%</span> <i class="fa-solid fa-users text-xs"></i>
+                            </span>
+                        </div>
+
+                        <!-- Range Slider Input -->
+                        <div class="relative py-1">
+                            <input type="range" min="0" max="100" step="5" 
+                                value="${answerState.val}" 
+                                ${answerState.na ? 'disabled' : ''} 
+                                oninput="updateSliderVal('${q.id}', this.value)"
+                                id="slider-${q.id}">
+                        </div>
+
+                        <!-- Visual Percentage Bar -->
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
+                            <div id="bar-ich-${q.id}" class="bg-violet-600 h-full transition-all duration-150" style="width: ${answerState.na ? 0 : answerState.val}%"></div>
+                            <div id="bar-other-${q.id}" class="bg-indigo-400 h-full transition-all duration-150" style="width: ${answerState.na ? 0 : (100 - answerState.val)}%"></div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(qCard);
+            });
+
+            // Prev Button state
+            document.getElementById('btn-prev').disabled = (currentPageIndex === 0);
+
+            // Next Button text
+            const btnNext = document.getElementById('btn-next');
+            if (currentPageIndex === 3) {
+                btnNext.innerHTML = `<span>Weiter</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+            } else if (currentPageIndex === 4) {
+                btnNext.innerHTML = `<span>Auswertung anzeigen</span> <i class="fa-solid fa-square-poll-vertical text-xs"></i>`;
+            } else {
+                btnNext.innerHTML = `<span>Nächste Seite</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
+            }
+        }
+
+        function updateSliderVal(qId, val) {
+            val = parseInt(val, 10);
+            if (!sliderAnswers[qId]) sliderAnswers[qId] = { val: 50, na: false };
+            sliderAnswers[qId].val = val;
+
+            const elIch = document.getElementById(`val-ich-${qId}`);
+            const elOther = document.getElementById(`val-other-${qId}`);
+            const barIch = document.getElementById(`bar-ich-${qId}`);
+            const barOther = document.getElementById(`bar-other-${qId}`);
+
+            if (elIch) elIch.innerText = `${val}%`;
+            if (elOther) elOther.innerText = `${100 - val}%`;
+            if (barIch) barIch.style.width = `${val}%`;
+            if (barOther) barOther.style.width = `${100 - val}%`;
+        }
+
+        function toggleNA(qId, isNA) {
+            if (!sliderAnswers[qId]) sliderAnswers[qId] = { val: 50, na: false };
+            sliderAnswers[qId].na = isNA;
+            renderPage();
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                renderPage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Navigation flow control
+        function nextPage() {
+            if (currentPageIndex === 3) {
+                // After Page 4 -> Show "Hast du Kinder?" filter
+                showChildrenFilter();
+            } else if (currentPageIndex === 4) {
+                // After Page 5 -> Show Results
+                showResults();
+            } else {
+                currentPageIndex++;
+                renderPage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function showChildrenFilter() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-children-filter').classList.remove('hidden');
+            document.getElementById('header-progress').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function previousPageFromChildrenFilter() {
+            document.getElementById('screen-children-filter').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('header-progress').classList.remove('hidden');
+            currentPageIndex = 3; // Seite 4
+            renderPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function answerChildrenQuestion(hasKids) {
+            hasChildren = hasKids;
+            document.getElementById('screen-children-filter').classList.add('hidden');
+
+            if (hasKids) {
+                // Go to Page 5
+                currentPageIndex = 4;
+                document.getElementById('screen-quiz').classList.remove('hidden');
+                document.getElementById('header-progress').classList.remove('hidden');
+                renderPage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Skip Page 5 and go directly to results
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-children-filter').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+            document.getElementById('header-progress').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Active pages count
+            const activePages = QUIZ_PAGES.filter(p => !p.requiresChildren || (p.requiresChildren && hasChildren));
+
+            let totalSum = 0;
+            let totalCount = 0;
+            const categoryResults = [];
+
+            activePages.forEach(page => {
+                let catSum = 0;
+                let catCount = 0;
+
+                page.questions.forEach(q => {
+                    const ans = sliderAnswers[q.id] || { val: 50, na: false };
+                    if (!ans.na) {
+                        catSum += ans.val;
+                        catCount++;
+                        totalSum += ans.val;
+                        totalCount++;
+                    }
+                });
+
+                const catAvg = catCount > 0 ? Math.round(catSum / catCount) : null;
+                categoryResults.push({
+                    category: page.category,
+                    avg: catAvg,
+                    count: catCount,
+                    totalQuestions: page.questions.length
+                });
+            });
+
+            const overallAvg = totalCount > 0 ? Math.round(totalSum / totalCount) : 0;
+
+            // Render Overall Score in main result box
+            document.getElementById('result-overall-percent').innerText = `${overallAvg}%`;
+
+            // Render Category Bars
+            const catBarsContainer = document.getElementById('category-bars-container');
+            catBarsContainer.innerHTML = '';
+
+            categoryResults.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'space-y-1.5';
+
+                if (cat.avg !== null) {
+                    item.innerHTML = `
+                        <div class="flex justify-between items-center text-xs sm:text-sm font-semibold">
+                            <span class="text-slate-800 font-bold">${cat.category}</span>
+                            <span class="text-violet-700 font-extrabold">${cat.avg}% Ich</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex">
+                            <div class="bg-violet-600 h-full rounded-full transition-all duration-500" style="width: ${cat.avg}%"></div>
+                            <div class="bg-indigo-200 h-full rounded-full transition-all duration-500" style="width: ${100 - cat.avg}%"></div>
+                        </div>
+                    `;
+                } else {
+                    item.innerHTML = `
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-semibold">
+                            <span>${cat.category}</span>
+                            <span>Alle als n/a markiert</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-slate-300 h-full" style="width: 0%"></div>
+                        </div>
+                    `;
+                }
+
+                catBarsContainer.appendChild(item);
+            });
+
+            // Render Detailed Answers List
+            renderDetailedAnswersList(activePages);
+        }
+
+        function renderDetailedAnswersList(activePages) {
+            const container = document.getElementById('detailed-answers-container');
+            container.innerHTML = '';
+
+            let counter = 1;
+            activePages.forEach(page => {
+                page.questions.forEach(q => {
+                    const ans = sliderAnswers[q.id] || { val: 50, na: false };
+                    const item = document.createElement('div');
+                    item.className = 'flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs gap-2';
+
+                    if (ans.na) {
+                        item.innerHTML = `
+                            <div>
+                                <span class="text-slate-400 font-semibold text-[10px] uppercase block">${page.category}</span>
+                                <span class="font-semibold text-slate-700">${counter}. ${q.text}</span>
+                            </div>
+                            <span class="shrink-0 px-2.5 py-1 rounded-md bg-slate-200 text-slate-600 font-bold self-start sm:self-center">
+                                n/a (Nicht zutreffend)
+                            </span>
+                        `;
+                    } else {
+                        item.innerHTML = `
+                            <div class="pr-2">
+                                <span class="text-slate-400 font-semibold text-[10px] uppercase block">${page.category}</span>
+                                <span class="font-semibold text-slate-800">${counter}. ${q.text}</span>
+                            </div>
+                            <div class="shrink-0 flex items-center gap-2 self-start sm:self-center font-bold">
+                                <span class="text-violet-700 bg-violet-100 px-2.5 py-1 rounded-md">Ich: ${ans.val}%</span>
+                                <span class="text-slate-600 bg-slate-200 px-2.5 py-1 rounded-md">Andere: ${100 - ans.val}%</span>
+                            </div>
+                        `;
+                    }
+
+                    container.appendChild(item);
+                    counter++;
+                });
+            });
+        }
+
+        function toggleDetailedAnswers() {
+            const container = document.getElementById('detailed-answers-container');
+            const btn = document.getElementById('btn-toggle-details').querySelector('i');
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                btn.style.transform = 'rotate(180deg)';
+            } else {
+                container.classList.add('hidden');
+                btn.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function copyResultsSummary() {
+            const activePages = QUIZ_PAGES.filter(p => !p.requiresChildren || (p.requiresChildren && hasChildren));
+            let totalSum = 0;
+            let totalCount = 0;
+
+            activePages.forEach(page => {
+                page.questions.forEach(q => {
+                    const ans = sliderAnswers[q.id] || { val: 50, na: false };
+                    if (!ans.na) {
+                        totalSum += ans.val;
+                        totalCount++;
+                    }
+                });
+            });
+
+            const overallAvg = totalCount > 0 ? Math.round(totalSum / totalCount) : 0;
+
+            const textToCopy = `Ergebnis meines Sorgearbeit Quizzes:\n` +
+                `- Eigener Sorgearbeit Anteil: ca. ${overallAvg}%\n` +
+                `- Bewertete Aufgaben: ${totalCount}\n` +
+                `- Kinder im Haushalt: ${hasChildren ? 'Ja' : 'Nein'}\n\n` +
+                `Hinweis: Nicht alle Aufgaben entsprechen dem gleichen zeitlichen und mentalen Aufwand (Mentale Belastung).`;
+
+            // Text copy fallback friendly approach
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const btnText = document.getElementById('copy-btn-text');
+            const originalText = btnText.innerText;
+            btnText.innerText = 'Kopiert! ✓';
+            setTimeout(() => {
+                btnText.innerText = originalText;
+            }, 2000);
+        }
+
+        // Initialize view on load
+        window.onload = function() {
+            showWelcomeScreen();
+        };
+    </script>
+</body>
+</html>
